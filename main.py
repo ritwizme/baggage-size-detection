@@ -1,9 +1,9 @@
 from scipy.spatial import distance as dist
 from imutils import perspective
-from imutils import contours
-import numpy as np
-import argparse
 import imutils
+import numpy as np
+from imutils import contours
+import argparse
 import cv2
 
 #finds the midpoint
@@ -55,15 +55,6 @@ for c in cnts:
 	(tlblX, tlblY) = mp(tleft, bleft)
 	(trbrX, trbrY) = mp(tright, bright)
 
-	cv2.circle(orig, (int(tltrX), int(tltrY)), 5, (255, 0, 0), -1)
-	cv2.circle(orig, (int(blbrX), int(blbrY)), 5, (255, 0, 0), -1)
-	cv2.circle(orig, (int(tlblX), int(tlblY)), 5, (255, 0, 0), -1)
-	cv2.circle(orig, (int(trbrX), int(trbrY)), 5, (255, 0, 0), -1)
-
-	cv2.line(orig, (int(tltrX), int(tltrY)), (int(blbrX), int(blbrY)),
-		(255, 0, 255), 2)
-	cv2.line(orig, (int(tlblX), int(tlblY)), (int(trbrX), int(trbrY)),
-		(255, 0, 255), 2)
 
 	dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
 	dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
@@ -73,12 +64,12 @@ for c in cnts:
 
 	dimA = dA / ppm
 	dimB = dB / ppm
-	cv2.putText(orig, "{:.1f}in".format(dimA),
+	cv2.putText(orig,"Height:"+"{:.1f}in".format(dimA),
 		(int(tltrX - 15), int(tltrY - 10)), cv2.FONT_HERSHEY_SIMPLEX,
-		0.65, (255, 255, 255), 2)
-	cv2.putText(orig, "{:.1f}in".format(dimB),
+		0.55, (255, 255, 255), 1)
+	cv2.putText(orig,"Width:"+"{:.1f}in".format(dimB),
 		(int(trbrX + 10), int(trbrY)), cv2.FONT_HERSHEY_SIMPLEX,
-		0.65, (255, 255, 255), 2)
+		0.55, (255, 255, 255), 1)
 
 	# show the output image
 	cv2.imshow("Image", orig)
