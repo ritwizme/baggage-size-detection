@@ -7,8 +7,8 @@ import imutils
 import cv2
 
 #finds the midpoint
-def mp(ptA, ptB):
-	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
+def mp(pointA, pointB):
+	return ((pointB[0] + pointB[0]) * 0.5, (pointB[1] + pointB[1]) * 0.5)
 
 #parcing arguments 
 ap = argparse.ArgumentParser()
@@ -31,7 +31,7 @@ cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
 cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
 (cnts, _) = contours.sort_contours(cnts)
-pixelsPerMetric = None
+ppm = None
 
 # loop over the contours individually
 for c in cnts:
@@ -48,12 +48,12 @@ for c in cnts:
 
 	for (x, y) in box:
 		cv2.circle(orig, (int(x), int(y)), 5, (0, 0, 255), -1)
-	(tl, tr, br, bl) = box
-	(tltrX, tltrY) = mp(tl, tr)
-	(blbrX, blbrY) = mp(bl, br)
+	(tleft, tright, bright, bleft) = box
+	(tltrX, tltrY) = mp(tleft, tright)
+	(blbrX, blbrY) = mp(bleft, bright)
 
-	(tlblX, tlblY) = mp(tl, bl)
-	(trbrX, trbrY) = mp(tr, br)
+	(tlblX, tlblY) = mp(tleft, bleft)
+	(trbrX, trbrY) = mp(tright, bright)
 
 	cv2.circle(orig, (int(tltrX), int(tltrY)), 5, (255, 0, 0), -1)
 	cv2.circle(orig, (int(blbrX), int(blbrY)), 5, (255, 0, 0), -1)
@@ -68,11 +68,11 @@ for c in cnts:
 	dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
 	dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
 
-	if pixelsPerMetric is None:
-		pixelsPerMetric = dB / args["width"]
+	if ppm is None:
+		ppm = dB / args["width"]
 
-	dimA = dA / pixelsPerMetric
-	dimB = dB / pixelsPerMetric
+	dimA = dA / ppm
+	dimB = dB / ppm
 	cv2.putText(orig, "{:.1f}in".format(dimA),
 		(int(tltrX - 15), int(tltrY - 10)), cv2.FONT_HERSHEY_SIMPLEX,
 		0.65, (255, 255, 255), 2)
